@@ -27,7 +27,7 @@ TLD = ".lol"
 # Para pruebas
 G0 = ["socrates@alumchat"+TLD,"aristoteles@alumchat"+TLD,"mnovella@alumchat"+TLD,"platon@alumchat"+TLD,"tales@alumchat"+TLD]
 GTest = ["val21240@alumchat"+TLD,"val21240-node1@alumchat"+TLD,"val21240-node2@alumchat"+TLD, "val21240-node3@alumchat"+TLD, "val21240-node4@alumchat"+TLD
-         ,"her21270@alumchat"+TLD]
+         ,"her21270@alumchat"+TLD, "jim21169@alumchat.lol"+TLD, "test123Jose@alumchat.lol"+TLD, "her21270-test1@alumchat.lol"+TLD, "her21270-test2@alumchat.lol"+TLD]
 
 TEST = []
 ## ALL

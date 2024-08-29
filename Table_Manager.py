@@ -31,11 +31,9 @@ class Table_Manager(ManagerXMPP):
         return super().__del__()
     
     def send_routing_message(self, to, message_, from_="",  hops=-1, from_node=""):
-        if hops == -1:
-            hops = len(self.names)
 
         print()
-        print(f"Send message to {to}")
+        print(f"🌊 Send message to {to}")
         print()
         if from_ == "":
             from_ = f"{self.username}@{self.server}"
@@ -53,6 +51,7 @@ class Table_Manager(ManagerXMPP):
         
         # If the algorithm is Dijkstra
         if self.algorithm == "Dijkstra":
+
             # wait where the table is charge
             while not self.table_weights:
                 pass
@@ -77,10 +76,12 @@ class Table_Manager(ManagerXMPP):
                     except:
                         graph[node][neighbor] = float("inf")
 
+
             # Run the Dijkstra algorithm
             print()
+            print(f"🟢  DIJKSTRA //////////////////////////////////////////")
             print("Graph:")
-            print(graph)
+            print(tabulate(graph.items(), headers=["Node", "Weights"], tablefmt="fancy_grid"))
             print()
             routing_table = Dijkstra(graph, self.actual_node, from_node )
             print(routing_table)
@@ -105,6 +106,11 @@ class Table_Manager(ManagerXMPP):
                 self.table_message(to, message)
                 return
             
+            # Veify if hops are over
+            if hops <= 0:
+                print("Hops are over")
+                return
+            
             # Create the message
             message = {
                 "type": "send_routing",
@@ -126,7 +132,7 @@ class Table_Manager(ManagerXMPP):
                 }
                 self.table_message(to, message)
             else:
-                if hops == 0:
+                if hops <= 0:
                     print("Hops are over")
                     return
 
@@ -305,7 +311,8 @@ class Table_Manager(ManagerXMPP):
             message = data.get("data", {})
             from__ = data.get("from", "")
             print()
-            print(f"Message from {from__}: {message}")
+            print(f"🎵 Message from {from__}: {message}")
+            print()
             
             
     
@@ -332,22 +339,22 @@ class Table_Manager(ManagerXMPP):
 
 def sendersas(router: Table_Manager):
     print("Send message")
-    time.sleep(15)
+    time.sleep(30)
     print("Send message2")
-    router.send_routing_message("val21240-node3@alumchat.lol", "Hello")
-    router.send_routing_message("her21270@alumchat.lol", "Hello")
+    #router.send_routing_message("val21240-node3@alumchat.lol", "Hello")
+    router.send_routing_message("her21270@alumchat.lol", "Hello", hops=len(router.names))
 
 def runRouter(router):
     asyncio.run(router.run())
 
 if __name__ == "__main__":
     # Read 
-    router = Table_Manager("val21240", "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt")
+    router = Table_Manager("val21240", "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt", algorithm="Flooding")
     import threading
     thread = threading.Thread(target=runRouter, args=(router,))
     thread2 = threading.Thread(target=sendersas, args=(router,))
     thread.start()
-    #thread2.start()
+    thread2.start()
 
 
 

@@ -3,7 +3,7 @@ import asyncio
 import threading
 
 def init_node(node):
-    router = Table_Manager(node, "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt")
+    router = Table_Manager(node, "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt", algorithm="Flooding")
     asyncio.run(router.run())
 
 if __name__ == "__main__":
