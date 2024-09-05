@@ -28,7 +28,6 @@ TLD = ".lol"
 G0 = ["socrates@alumchat"+TLD,"aristoteles@alumchat"+TLD,"mnovella@alumchat"+TLD,"platon@alumchat"+TLD,"tales@alumchat"+TLD]
 GTest = ["val21240@alumchat"+TLD,
          "sol21212@alumchat"+TLD,
-         "jim21169@alumchat"+TLD,
          "her21270@alumchat"+TLD]
 
 TEST = []

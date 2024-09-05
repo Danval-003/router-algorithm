@@ -1,1 +1,1 @@
-{"type":"names", "config":{'A': 'sol21212@alumchat.lol', 'B': 'jim21169@alumchat.lol', 'C': 'val21240@alumchat.lol', 'D': 'her21270@alumchat.lol', 'E': 'auy201579@alumchat.lol'} }
+{"type":"names", "config":{'A': 'val21240@alumchat.lol', 'B': 'her21270@alumchat.lol', 'C': 'sol21212@alumchat.lol'} }

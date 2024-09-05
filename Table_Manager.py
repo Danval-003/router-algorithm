@@ -51,10 +51,9 @@ class Table_Manager(ManagerXMPP):
         
         # If the algorithm is Dijkstra
         if self.algorithm == "Dijkstra":
+            self.table_with_weights = {}
 
-            # wait where the table is charge
-            while not self.table_weights:
-                pass
+
             # Create the graph
             graph = {}
             for node in self.table_weights:
