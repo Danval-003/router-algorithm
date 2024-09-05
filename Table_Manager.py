@@ -95,6 +95,12 @@ class Table_Manager(ManagerXMPP):
                 return
 
             next_node = routing_table[nodeName][1][1]
+
+            # Find if next node is in new neighbors
+            if next_node not in self.neighbors or next_node == self.actual_node:
+                print("Not exist path to the node")
+                return
+
             # Verify if the next node is the destination
             if next_node == nodeName:
                 print(f"Send message to {nodeName}")
@@ -209,6 +215,7 @@ class Table_Manager(ManagerXMPP):
                 "type": "echo"
             }
             self.on_eco[name] = time.perf_counter()
+            print(f"😿Send eco to {name}")
             self.table_message(neighbor, message)
         
 
@@ -337,24 +344,64 @@ class Table_Manager(ManagerXMPP):
         self.__del__()
 
 
-def sendersas(router: Table_Manager):
-    print("Send message")
-    time.sleep(30)
-    print("Send message2")
-    #router.send_routing_message("val21240-node3@alumchat.lol", "Hello")
-    router.send_routing_message("her21270@alumchat.lol", "Hello", hops=len(router.names))
-
 def runRouter(router):
     asyncio.run(router.run())
 
 if __name__ == "__main__":
     # Read 
-    router = Table_Manager("val21240", "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt", algorithm="Flooding")
+    router = Table_Manager("val21240", "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt")
     import threading
     thread = threading.Thread(target=runRouter, args=(router,))
-    thread2 = threading.Thread(target=sendersas, args=(router,))
     thread.start()
-    thread2.start()
+    import tkinter as tk
+    from tkinter import scrolledtext
+    import threading
+    import time
+
+    # Función que se ejecuta en un hilo y envía mensajes
+    def sendersas():
+        name = name_entry.get()
+        message = message_entry.get()
+        
+        if not name or not message:
+            text_area.insert(tk.END, "Name and message cannot be empty.\n")
+            return
+        
+        # Enviar mensaje usando el router global
+        router.send_routing_message(name, message, hops=len(router.names))
+        
+        # Enviar un mensaje a la cola para actualizar la interfaz de usuario
+        text_area.insert(tk.END, f"Message sent to {name}: {message}\n")
+        text_area.yview(tk.END)  # Desplazar hacia abajo
+
+    # Función para iniciar el hilo de envío de mensajes
+    def start_sendersas():
+        threading.Thread(target=sendersas).start()
+
+    # Crear la ventana principal
+    root = tk.Tk()
+    root.title("Message Sender")
+
+    # Crear un área de texto para mostrar los mensajes
+    text_area = scrolledtext.ScrolledText(root, wrap=tk.WORD, height=10, width=50)
+    text_area.pack(padx=10, pady=10)
+
+    # Crear campos de entrada para el nombre y el mensaje
+    tk.Label(root, text="Name:").pack(padx=10, pady=5)
+    name_entry = tk.Entry(root, width=50)
+    name_entry.pack(padx=10, pady=5)
+
+    tk.Label(root, text="Message:").pack(padx=10, pady=5)
+    message_entry = tk.Entry(root, width=50)
+    message_entry.pack(padx=10, pady=5)
+
+    # Crear un botón para iniciar el envío de mensajes
+    send_button = tk.Button(root, text="Send Message", command=start_sendersas)
+    send_button.pack(pady=10)
+
+    # Iniciar el bucle principal de la interfaz de usuario
+    root.mainloop()
+
 
 
 
