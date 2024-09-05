@@ -61,7 +61,7 @@ class Table_Manager(ManagerXMPP):
                 graph[node] = self.table_weights[node]["table"]
 
             for node in self.topology:
-                if node not in graph:
+                if node not in graph or graph[node] is None:
                     graph[node] = {n: float("inf") for n in self.topology[node]}
                 for neighbor in self.topology[node]:
                     if neighbor not in graph[node]:
