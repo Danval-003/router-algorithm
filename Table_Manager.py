@@ -6,6 +6,7 @@ import pandas as pd
 from typing import Dict
 import time
 from Dijkstra import Dijkstra
+import threading
 class Table_Manager(ManagerXMPP):
     def __init__(self, jid, password, namesfile, topologyfile, algorithm="Dijkstra"):
         ManagerXMPP.__init__(self, jid, password)
@@ -25,8 +26,9 @@ class Table_Manager(ManagerXMPP):
         self.ecos = 1
         self.table_weights = {}
         if algorithm == "Dijkstra":
-            asyncio.run(self.send_eco())
-
+            self.ecos_thread = threading.Thread(target=self.send_eco)
+            self.ecos_thread.start()
+            
     def __del__(self):
         return super().__del__()
     
@@ -206,16 +208,18 @@ class Table_Manager(ManagerXMPP):
                 else:
                     print("Unknown event: ", event)
 
-    async def send_eco(self):
-        self.ecos -= 1
-        # Send an eco message to all neighbors
-        for name, neighbor in self.neighbors.items():
-            message = {
-                "type": "echo"
-            }
-            self.on_eco[name] = time.perf_counter()
-            print(f"😿Send eco to {name}")
-            self.table_message(neighbor, message)
+    def send_eco(self, interval=30):
+
+        while True:
+            # Send an eco message to all neighbors
+            for name, neighbor in self.neighbors.items():
+                message = {
+                    "type": "echo"
+                }
+                self.on_eco[name] = time.perf_counter()
+                print(f"😿Send eco to {name}")
+                self.table_message(neighbor, message)
+            time.sleep(interval)
         
 
     async def message(self, data):
@@ -241,6 +245,9 @@ class Table_Manager(ManagerXMPP):
             response = {
                 "type": "echo_response"
             }
+            print()
+            print(f"🦜 Send Echo_response to {from_}")
+            print()
             self.table_message(from_, response)
 
         elif type_ == "echo_response":
@@ -272,8 +279,6 @@ class Table_Manager(ManagerXMPP):
                 "from": f"{self.username}@{self.server}"
             }
             await self.send_to_neighbors(to_send, exclude=[])
-            if self.ecos > 0:
-                await self.send_eco()
 
         elif type_ == "weights":
             print()
@@ -309,7 +314,7 @@ class Table_Manager(ManagerXMPP):
             to__ = data.get("to", "")
             hops = data.get("hops", -1)
             print()
-            print(f"Message from {from_} to {to__}: {message}")
+            print(f"🟢 Message from {from_} to {to__}: {message}")
             print()
             self.send_routing_message(data.get("to", ""), message, from_=data.get("from", ""), hops=hops)
 
@@ -348,7 +353,7 @@ def runRouter(router):
 
 if __name__ == "__main__":
     # Read 
-    router = Table_Manager("val21240", "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt")
+    router = Table_Manager("val21240-node1", "PSSWD", "names2024-randomX-2024.txt", "topo2024-randomX-2024.txt")
     import threading
     thread = threading.Thread(target=runRouter, args=(router,))
     thread.start()
